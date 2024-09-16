@@ -80,6 +80,11 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-private-methods": "^7.25.4",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@types/autosize": "^4.0.3",
     "@types/dompurify": "^3.0.5",
     "@types/html-to-text": "^9.0.4",
@@ -88,6 +93,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uuid": "^10.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
