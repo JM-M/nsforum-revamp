@@ -1,3 +1,4 @@
+import { revalidateTagFromClient } from "@/shared/actions/reactions";
 import useCategories from "@/shared/hooks/useCategories";
 import useProfile from "@/shared/hooks/useProfile";
 import {
@@ -8,9 +9,12 @@ import { orbisdb } from "@/shared/orbis";
 import { createPost, updatePost } from "@/shared/orbis/mutations";
 import { fetchPost } from "@/shared/orbis/queries";
 import { postFormSchema, PostFormType, PostStatus } from "@/shared/schema/post";
+import { OrbisDBRow } from "@/shared/types";
+import { Post } from "@/shared/types/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CeramicDocument } from "@useorbis/db-sdk";
+import { produce } from "immer";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -37,9 +41,8 @@ const usePostForm = ({ isEditing }: Props) => {
   });
   const { setValue, reset } = form;
 
-  const {
-    postQuery: { data: post, isLoading: isLoadingPost },
-  } = usePost();
+  const { postQuery, postQueryKey } = usePost();
+  const { data: post, isLoading: isLoadingPost } = postQuery;
   const postId = post?.stream_id;
 
   // Initialize form with post and clear on unmount
@@ -107,8 +110,20 @@ const usePostForm = ({ isEditing }: Props) => {
     onSuccess: async (result) => {
       if (!result) return;
       queryClient.invalidateQueries({
-        queryKey: ["posts"],
+        queryKey: postQueryKey,
       });
+      queryClient.setQueryData(
+        postQueryKey,
+        produce((oldPost: OrbisDBRow<Post>) => {
+          if (oldPost) Object.assign(oldPost, result.content);
+        }),
+      );
+      // Revalidate posts
+      await revalidateTagFromClient("homepage-posts");
+      if (isEditing && post?.slug) {
+        // Revalidate post page
+        await revalidateTagFromClient(post.slug);
+      }
       router.push(`/posts/${result?.content?.slug}`);
     },
     onError: console.error,
