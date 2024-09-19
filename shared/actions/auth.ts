@@ -3,13 +3,15 @@
 import { PrivyClient } from "@privy-io/server-auth";
 import { isServer } from "@tanstack/react-query";
 import { cookies } from "next/headers";
+import { findRow } from "../orbis/utils";
+import { Profile } from "../types/profile";
 
 const privy = new PrivyClient(
   process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
   process.env.PRIVY_APP_SECRET!,
 );
 
-const getAuthTokenClaim = async () => {
+const getAuthTokenClaims = async () => {
   if (!isServer) return null;
 
   const cookieStore = cookies();
@@ -25,14 +27,20 @@ const getAuthTokenClaim = async () => {
   }
 };
 
+export const getCurrentPrivyUserId = async () => {
+  const authTokenClaims = await getAuthTokenClaims();
+  if (!authTokenClaims) return null;
+  return authTokenClaims.userId;
+};
+
 export const checkAdminAuth = async () => {
   if (!isServer) return null;
 
   try {
-    const authTokenClaim = await getAuthTokenClaim();
-    if (!authTokenClaim) return false;
+    const authTokenClaims = await getAuthTokenClaims();
+    if (!authTokenClaims) return false;
 
-    const userId = authTokenClaim.userId.replace("did:privy:", "");
+    const userId = authTokenClaims.userId.replace("did:privy:", "");
     const adminIds = JSON.parse(process.env.ADMIN_DIDS! || "[]") || [];
     return adminIds.includes(userId);
   } catch (error) {
@@ -41,11 +49,11 @@ export const checkAdminAuth = async () => {
   }
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentPrivyUser = async () => {
   try {
-    const authTokenClaim = await getAuthTokenClaim();
-    if (!authTokenClaim) return null;
-    const userId = authTokenClaim.userId;
+    const authTokenClaims = await getAuthTokenClaims();
+    if (!authTokenClaims) return null;
+    const userId = authTokenClaims.userId;
     const privy = new PrivyClient(
       process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
       process.env.PRIVY_APP_SECRET!,
@@ -60,7 +68,7 @@ export const getCurrentUser = async () => {
 
 export const isUserVerified = async () => {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentPrivyUser();
     const linkedAccounts = user?.linkedAccounts || [];
     for (const acct of linkedAccounts) {
       if (["phone", "twitter_oauth"].includes(acct.type)) {
@@ -72,4 +80,13 @@ export const isUserVerified = async () => {
     console.log(`Error while checking user verification: ${error}`);
     return null;
   }
+};
+
+export const fetchCurrentUserProfile = async () => {
+  const privyId = await getCurrentPrivyUserId();
+  if (!privyId) return null;
+  return await findRow<Profile>({
+    model: "users",
+    where: { privy_id: privyId },
+  });
 };

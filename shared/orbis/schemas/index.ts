@@ -23,11 +23,8 @@ export const users = {
       email: {
         type: "string",
       },
-      followers: {
-        type: "number",
-      },
-      following: {
-        type: "number",
+      privy_id: {
+        type: "string",
       },
       verified: {
         type: "boolean",
@@ -126,6 +123,9 @@ export const subscriptions = {
         type: "string",
       },
       subscribed: {
+        type: "boolean",
+      },
+      post_notifications: {
         type: "boolean",
       },
     },
