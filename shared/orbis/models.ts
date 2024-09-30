@@ -1,3 +1,3 @@
 const models = {} as const;
 
-export default models;
+export default models as any;

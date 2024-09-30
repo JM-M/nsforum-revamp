@@ -20,28 +20,28 @@ export type Relation<T extends keyof Schema, K extends keyof Schema> = {
 
 export const subscriptionReaderRelation: Relation<"subscriptions", "users"> = {
   referenceName: "reader",
-  table: models.subscriptions.id,
+  table: models.subscriptions?.id,
   column: "reader_did",
   referencedColumn: "controller",
-  referencedTable: models.users.id,
+  referencedTable: models.users?.id,
   referencedType: "single",
 };
 
 export const notificationReaderRelation: Relation<"notifications", "users"> = {
   referenceName: "reader",
-  table: models.notifications.id,
+  table: models.notifications?.id,
   column: "reader_did",
   referencedColumn: "controller",
-  referencedTable: models.users.id,
+  referencedTable: models.users?.id,
   referencedType: "single",
 };
 
 // export const notificationsPostsRelation: Relation<"notifications", "posts"> = {
 //   referenceName: "posts",
-//   table: models.notifications.id,
+//   table: models.notifications?.id,
 //   column: "posts",
 //   referencedColumn: "stream_id",
-//   referencedTable: models.posts.id,
+//   referencedTable: models.posts?.id,
 //   referencedType: "single",
 // };
 
@@ -50,19 +50,19 @@ export const notificationReaderRelation: Relation<"notifications", "users"> = {
 //   "comments"
 // > = {
 //   referenceName: "comments",
-//   table: models.notifications.id,
+//   table: models.notifications?.id,
 //   column: "comments",
 //   referencedColumn: "comments",
-//   referencedTable: models.notifications.id,
+//   referencedTable: models.notifications?.id,
 //   referencedType: "single",
 // };
 
 export const postTagsRelation: Relation<"posts", "tags"> = {
   referenceName: "tags",
-  table: models.posts.id,
+  table: models.posts?.id,
   column: "tag_ids",
   referencedColumn: "stream_id",
-  referencedTable: models.tags.id,
+  referencedTable: models.tags?.id,
   referencedType: "list",
 };
 
