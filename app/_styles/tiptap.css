@@ -45,6 +45,12 @@
   @apply font-serif font-medium;
 }
 
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  @apply font-semibold;
+}
+
 .tiptap h1 {
   margin-top: 2.5rem;
   margin-bottom: 1rem;
@@ -191,5 +197,5 @@
 }
 
 .tiptap a {
-  @apply cursor-pointer hover:underline;
+  @apply text-link-600 cursor-pointer text-wrap break-words underline;
 }

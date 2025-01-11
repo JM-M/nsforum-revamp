@@ -1,4 +1,6 @@
+import scrollbarHide from "tailwind-scrollbar-hide";
 import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
@@ -32,7 +34,12 @@ const config = {
       // },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)"],
+        serif: ["var(--font-serif)"],
+      },
       colors: {
+        link: colors.blue,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -88,7 +95,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), scrollbarHide],
 } satisfies Config;
 
 export default config;

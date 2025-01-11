@@ -13,8 +13,8 @@ import StarterKit from "@tiptap/starter-kit";
 import { forwardRef, useEffect, useState } from "react";
 import { FieldError, RefCallBack } from "react-hook-form";
 import { Markdown } from "tiptap-markdown";
+import ComponentMenus from "./components/ComponentMenus";
 import MdEditor from "./components/MdEditor";
-import TableMenu from "./components/TableMenu";
 import Toolbar from "./components/Toolbar";
 import { EditorContext } from "./context";
 import Iframe from "./plugins/iframe";
@@ -64,7 +64,7 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
           placeholder,
         }),
         Link.configure({
-          openOnClick: true,
+          openOnClick: false,
           autolink: true,
           defaultProtocol: "https",
           HTMLAttributes: {
@@ -165,10 +165,11 @@ const RichTextEditor = forwardRef<HTMLDivElement, Props>(
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             className={cn("flex flex-1 flex-col", {
-              "-z-1 pointer-events-none h-0 w-0 opacity-0": isMdEditorActive,
+              "-z-1 pointer-events-none h-0 w-0 flex-[0] opacity-0":
+                isMdEditorActive,
             })}
           />
-          <TableMenu />
+          <ComponentMenus />
           {hasLimit && (
             <span className="text-gray-5 absolute bottom-1 right-2 text-sm">
               {charsLeft} charaters left
